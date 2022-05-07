@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { AppLayout } from "./components/AppLayout";
+import { EmptyState } from "./components/EmptyState";
+import { AuthPage } from "./pages/AuthPage";
+import { LandingPage } from "./pages/LandingPage";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        {/* public routes  */}
+        <Route path="/" element={<AppLayout />}>
+          <Route
+            path="*"
+            exact
+            element={
+              <EmptyState
+              // title="404 Error : Page Not found"
+              // description="This is not where you should be"
+              // onButtonClick={() => navigate("/videos")}
+              // buttonText="Watch Videos"
+              // imageUrl={errorImage}
+              />
+            }
+          />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/auth" element={<AuthPage />} />
+        </Route>
+      </Routes>
+    </Router>
   );
 }
 
