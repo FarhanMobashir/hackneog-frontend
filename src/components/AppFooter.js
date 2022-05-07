@@ -55,6 +55,7 @@ export const AppFooter = ({ footerData }) => {
       {footerData.map((item) => {
         return (
           <FooterRow
+            key={item.title}
             title={item.title}
             subtitle={item.subtitle}
             links={item.links}

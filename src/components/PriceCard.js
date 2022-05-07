@@ -34,7 +34,7 @@ export const PriceCard = ({ title, subtitle, features }) => {
       <PriceCardSubtitle>{subtitle}</PriceCardSubtitle>
       <FeatureContainer>
         {features.map((item) => {
-          return <FeatureItem>{item}</FeatureItem>;
+          return <FeatureItem key={item}>{item}</FeatureItem>;
         })}
       </FeatureContainer>
       <BasicButton>Get Started</BasicButton>
