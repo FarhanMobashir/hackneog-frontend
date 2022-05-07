@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { BasicButton } from "../components/Buttons";
 import { useState } from "react";
 import { neutral, primaryColor } from "../utils";
+import { AddQuestion } from "../components/AddQuestion";
 const MainContainer = styled.div`
   padding: 20px;
 `;
@@ -26,7 +27,12 @@ const Answer = styled.p`
   margin: 5px 0px;
 `;
 
-const questionData = [
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
+
+const questionDataInitial = [
   {
     id: 1,
     question: "What is your name?",
@@ -39,14 +45,35 @@ const questionData = [
   },
 ];
 
+const defaultAnswer = "It is subjective";
+
 export const CreateInterview = () => {
-  const [questions, setQuestions] = useState(questionData);
+  const [questionsData, setQuestionsData] = useState(questionDataInitial);
+  const [showAddQuestionForm, setShowAddQuestionForm] = useState(false);
+  const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState(defaultAnswer);
+
+  const addQuestionHandler = () => {
+    setShowAddQuestionForm(true);
+    if (question !== "") {
+      const data = {
+        id: questionDataInitial[0].id++,
+        question,
+        answer,
+      };
+      setAnswer(defaultAnswer);
+      setQuestion("");
+      setQuestionsData([...questionsData, data]);
+      setShowAddQuestionForm(!showAddQuestionForm);
+    }
+  };
+
   return (
     <MainContainer>
       <Heading>Create Interview in just 5 mins</Heading>
       <SubHeadinng>Taking Interview has never been this easy</SubHeadinng>
       <CreateInterviewContainer>
-        {questions.map((item) => {
+        {questionsData.map((item) => {
           return (
             <QuestionsContainer key={item.id}>
               <Question>{item.question}</Question>
@@ -54,7 +81,24 @@ export const CreateInterview = () => {
             </QuestionsContainer>
           );
         })}
-        <BasicButton>Add Question +</BasicButton>
+        {showAddQuestionForm && (
+          <AddQuestion
+            questionValue={question}
+            answerValue={answer}
+            onQuestionChange={(e) => setQuestion(e.target.value)}
+            onAnswerChange={(e) => setAnswer(e.target.value)}
+          />
+        )}
+        <ButtonContainer>
+          <BasicButton onClick={addQuestionHandler}>Add Question +</BasicButton>
+          {showAddQuestionForm && (
+            <BasicButton
+              onClick={() => setShowAddQuestionForm(!showAddQuestionForm)}
+            >
+              Close
+            </BasicButton>
+          )}
+        </ButtonContainer>
       </CreateInterviewContainer>
       <BasicButton>Create</BasicButton>
     </MainContainer>
