@@ -1,11 +1,14 @@
 import { Outlet } from "react-router-dom";
+import { FooterData } from "../constants/FooterData";
+import { AppFooter } from "./AppFooter";
+import { AppHeader } from "./AppHeader";
 
 export const AppLayout = () => {
   return (
-    <div>
-      <h1>This is header</h1>
+    <>
+      <AppHeader />
       <Outlet />
-      <h1>This is footer</h1>
-    </div>
+      <AppFooter footerData={FooterData} />
+    </>
   );
 };
