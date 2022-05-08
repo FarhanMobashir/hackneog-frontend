@@ -7,13 +7,19 @@ import {
   FiPhoneMissed,
 } from "react-icons/fi";
 import { neutral, red } from "../utils";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import CodeMirror from "codemirror";
 import * as Y from "yjs";
 import { WebrtcProvider } from "y-webrtc";
 import { CodemirrorBinding } from "y-codemirror";
 import "codemirror/mode/javascript/javascript.js";
 import "../codemirror.style.css";
+// peerjs
+import Peer from "peerjs";
+// socket
+import { io } from "socket.io-client";
+import { TextField } from "../components/TextField";
+import { BasicButton } from "../components/Buttons";
 
 const MainContainer = styled.div`
   display: flex;
@@ -63,9 +69,75 @@ const VideoElement = styled.video`
 `;
 
 export const InterviewPage = () => {
+  const [socket, setSocket] = useState(null);
+  const remoteVideoRef = useRef();
+  const currentUserVideoRef = useRef();
+  const peerInstance = useRef(null);
+  const [peerId, setPeerId] = useState("");
+  const [remotePeerId, setRemotePeerId] = useState("");
+
+  // helpers
+  const call = (remotePeerId) => {
+    var getUserMedia =
+      navigator.getUserMedia ||
+      navigator.webkitGetUserMedia ||
+      navigator.mozGetUserMedia;
+
+    getUserMedia({ video: true, audio: true }, (mediaStream) => {
+      currentUserVideoRef.current.srcObject = mediaStream;
+      currentUserVideoRef.current.play();
+
+      const call = peerInstance.current.call(remotePeerId, mediaStream);
+
+      call.on("stream", (remoteStream) => {
+        remoteVideoRef.current.srcObject = remoteStream;
+        remoteVideoRef.current.play();
+      });
+    });
+  };
+
+  useEffect(() => {
+    let peer = new Peer();
+    peer.on("open", (id) => {
+      setPeerId(id);
+    });
+
+    peer.on("call", (call) => {
+      var getUserMedia =
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia;
+
+      getUserMedia({ video: true, audio: true }, (mediaStream) => {
+        currentUserVideoRef.current.srcObject = mediaStream;
+        currentUserVideoRef.current.play();
+        call.answer(mediaStream);
+        call.on("stream", function (remoteStream) {
+          remoteVideoRef.current.srcObject = remoteStream;
+          remoteVideoRef.current.play();
+        });
+      });
+    });
+
+    peerInstance.current = peer;
+
+    // -----------------
+    const newSocket = io("http://localhost:8080", {
+      path: "/interviews",
+    });
+    setSocket(newSocket);
+    peer.on("open", (id) => console.log(id));
+    return () => newSocket.close();
+  }, [setSocket]);
+
+  if (socket) {
+    socket.on("connect", () => console.log("hello"));
+  }
+
+  // collborative editing
   useEffect(() => {
     const ydoc = new Y.Doc();
-    const provider = new WebrtcProvider("yjs-demo", ydoc);
+    const provider = new WebrtcProvider("yjs-demo", ydoc, { maxConns: 1 });
 
     const yText = ydoc.getText("codemirror");
     const editorContainer = document.querySelector("#editor");
@@ -73,7 +145,7 @@ export const InterviewPage = () => {
     const editor = CodeMirror(editorContainer, {
       mode: "javascript",
       lineNumbers: true,
-      // theme: "dracula",
+      theme: "dracula",
     });
 
     const binding = new CodemirrorBinding(yText, editor, provider.awareness);
@@ -106,16 +178,29 @@ export const InterviewPage = () => {
       });
   }
 
-  useEffect(() => {
-    StreamVideo();
-  }, [playingVideo, playingAudio]);
+  // useEffect(() => {
+  //   StreamVideo();
+  // }, [playingVideo, playingAudio]);
 
   return (
     <MainContainer>
       <TopContainer>
         <EditorArea id="editor"></EditorArea>
         <SideBar>
-          <VideoElement className="video" autoPlay={true} />
+          <VideoElement
+            ref={currentUserVideoRef}
+            // className="video"
+            autoPlay={true}
+          />
+          <VideoElement ref={remoteVideoRef} autoPlay={true} />
+          <TextField
+            type="text"
+            label="Remote peerid"
+            value={remotePeerId}
+            placeholder="Enter peerId here"
+            onChange={(e) => setRemotePeerId(e.target.value)}
+          />
+          <BasicButton onClick={() => call(remotePeerId)}>Call</BasicButton>
         </SideBar>
       </TopContainer>
       <ActionBar>
