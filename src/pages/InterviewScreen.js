@@ -137,7 +137,7 @@ export const InterviewPage = () => {
   // collborative editing
   useEffect(() => {
     const ydoc = new Y.Doc();
-    const provider = new WebrtcProvider("yjs-demo", ydoc, { maxConns: 1 });
+    const provider = new WebrtcProvider("yjs-demo", ydoc, { maxConns: 2 });
 
     const yText = ydoc.getText("codemirror");
     const editorContainer = document.querySelector("#editor");
@@ -152,31 +152,31 @@ export const InterviewPage = () => {
   }, []);
   const [playingVideo, setPlayingVideo] = useState(true);
   const [playingAudio, setPlayingAudio] = useState(true);
-  function StreamVideo() {
-    var video = document.querySelector(".video");
-    video.muted = true;
+  // function StreamVideo() {
+  //   var video = document.querySelector(".video");
+  //   video.muted = true;
 
-    navigator.mediaDevices
-      .getUserMedia({
-        audio: true,
-        video: true,
-      })
-      .then(function (mediaStream) {
-        let video = document.querySelector(".video");
-        video.srcObject = mediaStream;
-        if (!playingVideo) {
-          mediaStream.getTracks().forEach((i) => {
-            if (i.kind === "video") {
-              i.stop();
-            }
-          });
-        }
+  //   navigator.mediaDevices
+  //     .getUserMedia({
+  //       audio: true,
+  //       video: true,
+  //     })
+  //     .then(function (mediaStream) {
+  //       let video = document.querySelector(".video");
+  //       video.srcObject = mediaStream;
+  //       if (!playingVideo) {
+  //         mediaStream.getTracks().forEach((i) => {
+  //           if (i.kind === "video") {
+  //             i.stop();
+  //           }
+  //         });
+  //       }
 
-        video.onLoadedMetadata = function (e) {
-          video.play();
-        };
-      });
-  }
+  //       video.onLoadedMetadata = function (e) {
+  //         video.play();
+  //       };
+  //     });
+  // }
 
   // useEffect(() => {
   //   StreamVideo();
