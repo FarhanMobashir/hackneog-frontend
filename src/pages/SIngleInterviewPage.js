@@ -1,6 +1,9 @@
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { BasicButton } from "../components/Buttons";
 import { QuestionCard } from "../components/QuestionCard";
+import { useApi } from "../contexts/ApiContext";
+import { useData } from "../contexts/DataContext";
 
 const singleInterViewData = {
   id: 1,
@@ -29,19 +32,28 @@ const MainContainer = styled.div`
 const Heading = styled.h1``;
 
 export const SingleInterviewPage = () => {
+  const { interviewId } = useParams();
+  const navigate = useNavigate();
+  const { usegetSingleInterview } = useApi();
+  const { loading, data } = usegetSingleInterview(interviewId);
+  const { state: globalState } = useData();
+  const singleInterview = globalState.singleInterview;
   return (
     <MainContainer>
-      <Heading>{singleInterViewData.name}</Heading>
-      {singleInterViewData.questions.map((item) => {
-        return (
-          <QuestionCard
-            key={item.id}
-            question={item.question}
-            answer={item.answer}
-          />
-        );
-      })}
-      <BasicButton>Join Now</BasicButton>
+      <Heading>{singleInterview.name}</Heading>
+      {!loading &&
+        singleInterview.questions.map((item) => {
+          return (
+            <QuestionCard
+              key={item._id}
+              question={item.question}
+              answer={item.answer}
+            />
+          );
+        })}
+      <BasicButton onClick={() => navigate(`/interviews/start/${interviewId}`)}>
+        Join Now
+      </BasicButton>
     </MainContainer>
   );
 };

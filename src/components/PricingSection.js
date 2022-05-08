@@ -11,6 +11,9 @@ const PriceSectionTitle = styled.h2``;
 const PriceCardContainer = styled.div`
   display: flex;
   gap: 2rem;
+  @media (max-width: 700px) {
+    flex-direction: column;
+  }
 `;
 
 export const PricingSection = ({ sectionTitle, pricingPlan }) => {

@@ -1,6 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { InterviewCard } from "../components/InterviewCard";
+import { useApi } from "../contexts/ApiContext";
+import { useData } from "../contexts/DataContext";
 
 const interViewData = [
   {
@@ -26,17 +28,25 @@ const MainContainer = styled.div`
 const Heading = styled.h1``;
 
 export const AllInterview = () => {
+  const { usegetAllInterview, usedeleteInterview } = useApi();
+  const { state: globalState } = useData();
+  const { loading: isLoadingAllInterview, data: interviewDataFromApi } =
+    usegetAllInterview();
+  const [deleteInterview, { loading: deletingInterview }] =
+    usedeleteInterview();
+
   const navigate = useNavigate();
   return (
     <MainContainer>
       <Heading>All Interviews</Heading>
-      {interViewData.map((item, idx) => {
+      {globalState.interviews.map((item, idx) => {
         return (
           <InterviewCard
             key={idx}
             title={item.name}
-            questionNumber={item.questions}
-            onClick={() => navigate(`/interviews/${item.id}`)}
+            questionNumber={item.questions.length}
+            onClick={() => navigate(`/interviews/${item._id}`)}
+            onDelete={() => deleteInterview({}, item._id)}
           />
         );
       })}

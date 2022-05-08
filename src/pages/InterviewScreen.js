@@ -20,6 +20,11 @@ import Peer from "peerjs";
 import { io } from "socket.io-client";
 import { TextField } from "../components/TextField";
 import { BasicButton } from "../components/Buttons";
+import { useAuth } from "../contexts/AuthContext";
+import { useApi } from "../contexts/ApiContext";
+import { useParams } from "react-router-dom";
+import { useData } from "../contexts/DataContext";
+import { QuestionCard } from "../components/QuestionCard";
 
 const MainContainer = styled.div`
   display: flex;
@@ -31,11 +36,18 @@ const TopContainer = styled.div`
   height: 85vh;
 `;
 const EditorArea = styled.div`
-  flex-basis: 70%;
+  width: 75vw;
   height: 100%;
 `;
 const SideBar = styled.div`
-  flex-basis: 30%;
+  flex-basis: 25%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  align-items: center;
+  margin-left: auto;
+  padding: 10px 0px;
 `;
 
 const ActionBar = styled.div`
@@ -61,11 +73,18 @@ const IconContainer = styled.button`
 `;
 
 const VideoElement = styled.video`
-  border: 1px solid black;
   padding: 1rem;
-  background-color: black;
-  width: 200px;
+  background-color: ${neutral[500]};
+  border-radius: 10px;
+  width: 150px;
+  height: 150px;
+`;
+
+// list questions
+const QuestionContainer = styled.div`
   height: 200px;
+  overflow: auto;
+  padding: 0px 10px;
 `;
 
 export const InterviewPage = () => {
@@ -75,6 +94,16 @@ export const InterviewPage = () => {
   const peerInstance = useRef(null);
   const [peerId, setPeerId] = useState("");
   const [remotePeerId, setRemotePeerId] = useState("");
+  const [playingVideo, setPlayingVideo] = useState(true);
+  const [playingAudio, setPlayingAudio] = useState(true);
+  const [showQuestions, setShowQuestions] = useState(false);
+
+  const { interviewId } = useParams();
+  const { isAuthenticated } = useAuth();
+  const { usegetSingleInterview } = useApi();
+  const { loading, data } = usegetSingleInterview(interviewId);
+  const { state: globalState } = useData();
+  const singleInterview = globalState.singleInterview;
 
   // helpers
   const call = (remotePeerId) => {
@@ -121,6 +150,51 @@ export const InterviewPage = () => {
   };
 
   useEffect(() => {
+    let stream = currentUserVideoRef.current.srcObject;
+    if (stream) {
+      const tracks = stream.getTracks();
+      if (!playingVideo) {
+        tracks.forEach((track) => {
+          if (track.kind === "video") {
+            track.enabled = false;
+          }
+        });
+      }
+      if (playingVideo) {
+        tracks.forEach((track) => {
+          if (track.kind === "video") {
+            track.enabled = true;
+          }
+        });
+      }
+      if (!playingAudio) {
+        tracks.forEach((track) => {
+          if (track.kind === "audio") {
+            track.enabled = false;
+          }
+        });
+      }
+      if (playingAudio) {
+        tracks.forEach((track) => {
+          if (track.kind === "audio") {
+            track.enabled = true;
+          }
+        });
+      }
+      if (!playingVideo && !playingAudio) {
+        tracks.forEach((track) => {
+          track.enabled = false;
+        });
+      }
+      if (playingVideo && playingAudio) {
+        tracks.forEach((track) => {
+          track.enabled = true;
+        });
+      }
+    }
+  }, [playingVideo, playingAudio]);
+
+  useEffect(() => {
     recieveCall();
     // // -----------------
     // const newSocket = io("http://localhost:8080", {
@@ -130,10 +204,6 @@ export const InterviewPage = () => {
     // peer.on("open", (id) => console.log(id));
     // return () => newSocket.close();
   }, []);
-
-  if (socket) {
-    socket.on("connect", () => console.log("hello"));
-  }
 
   // collborative editing
   useEffect(() => {
@@ -151,8 +221,7 @@ export const InterviewPage = () => {
 
     const binding = new CodemirrorBinding(yText, editor, provider.awareness);
   }, []);
-  const [playingVideo, setPlayingVideo] = useState(true);
-  const [playingAudio, setPlayingAudio] = useState(true);
+
   // function StreamVideo() {
   //   var video = document.querySelector(".video");
   //   video.muted = true;
@@ -194,14 +263,41 @@ export const InterviewPage = () => {
             autoPlay={true}
           />
           <VideoElement ref={remoteVideoRef} autoPlay={true} />
-          <TextField
-            type="text"
-            label="Remote peerid"
-            value={remotePeerId}
-            placeholder="Enter peerId here"
-            onChange={(e) => setRemotePeerId(e.target.value)}
-          />
-          <BasicButton onClick={() => call(remotePeerId)}>Call</BasicButton>
+          {!showQuestions && (
+            <>
+              <TextField
+                type="text"
+                label="Remote peerid"
+                value={remotePeerId}
+                placeholder="Enter peerId here"
+                onChange={(e) => setRemotePeerId(e.target.value)}
+              />
+              <BasicButton onClick={() => call(remotePeerId)}>Call</BasicButton>
+            </>
+          )}
+          {isAuthenticated() && !showQuestions && (
+            <BasicButton onClick={() => setShowQuestions(true)}>
+              See Questions
+            </BasicButton>
+          )}
+          {isAuthenticated() && showQuestions && (
+            <BasicButton onClick={() => setShowQuestions(false)}>
+              Close
+            </BasicButton>
+          )}
+          {isAuthenticated() && showQuestions && (
+            <QuestionContainer>
+              {singleInterview.questions.map((item) => {
+                return (
+                  <QuestionCard
+                    key={item.id}
+                    question={item.question}
+                    answer={item.answer}
+                  />
+                );
+              })}
+            </QuestionContainer>
+          )}
         </SideBar>
       </TopContainer>
       <ActionBar>

@@ -1,9 +1,13 @@
 import styled from "styled-components";
 import { BasicButton } from "../components/Buttons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { neutral, primaryColor } from "../utils";
 import { AddQuestion } from "../components/AddQuestion";
 import { QuestionCard } from "../components/QuestionCard";
+import { TextField } from "../components/TextField";
+import { nanoid } from "nanoid";
+import { useApi } from "../contexts/ApiContext";
+import { useNavigate } from "react-router-dom";
 const MainContainer = styled.div`
   padding: 20px;
 `;
@@ -21,12 +25,12 @@ const ButtonContainer = styled.div`
 
 const questionDataInitial = [
   {
-    id: 1,
+    id: nanoid(),
     question: "What is your name?",
     answer: "My name is what i will say during the interview",
   },
   {
-    id: 2,
+    id: nanoid(),
     question: "Where are you from?",
     answer: "I currently live in my house",
   },
@@ -36,16 +40,24 @@ const defaultAnswer = "It is subjective";
 
 export const CreateInterview = () => {
   const [questionsData, setQuestionsData] = useState(questionDataInitial);
+  const [interviewName, setInterviewName] = useState("");
   const [showAddQuestionForm, setShowAddQuestionForm] = useState(false);
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState(defaultAnswer);
+  const navigate = useNavigate();
+
+  // api calls
+  const { usecreateInterview } = useApi();
+
+  const [createInterview, { loading: creatingInterview, data: interViewData }] =
+    usecreateInterview();
 
   const addQuestionHandler = () => {
     setShowAddQuestionForm(true);
     if (question !== "") {
       const data = {
-        id: questionDataInitial[0].id++,
-        question,
+        id: nanoid(),
+        question: question + "?",
         answer,
       };
       setAnswer(defaultAnswer);
@@ -54,12 +66,34 @@ export const CreateInterview = () => {
       setShowAddQuestionForm(!showAddQuestionForm);
     }
   };
+  useEffect(() => {
+    if (!creatingInterview && interViewData) {
+      navigate(`/interviews/${interViewData.data._id}`);
+    }
+  }, [interViewData]);
+
+  const createInterviewHandler = () => {
+    if (interviewName !== "") {
+      createInterview({
+        name: interviewName,
+        questions: questionsData,
+      });
+    }
+  };
 
   return (
     <MainContainer>
       <Heading>Create Interview in just 5 mins</Heading>
       <SubHeadinng>Taking Interview has never been this easy</SubHeadinng>
+
       <CreateInterviewContainer>
+        <TextField
+          label="Enter Interview Name"
+          placeholder="Enter name..."
+          required={true}
+          value={interviewName}
+          onChange={(e) => setInterviewName(e.target.value)}
+        />
         {questionsData.map((item) => {
           return (
             <QuestionCard
@@ -88,7 +122,7 @@ export const CreateInterview = () => {
           )}
         </ButtonContainer>
       </CreateInterviewContainer>
-      <BasicButton>Create</BasicButton>
+      <BasicButton onClick={() => createInterviewHandler()}>Create</BasicButton>
     </MainContainer>
   );
 };

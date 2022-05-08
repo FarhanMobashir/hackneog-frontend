@@ -8,13 +8,20 @@ const CardContainer = styled.div`
 `;
 const CardTitle = styled.h3``;
 const QuestionNumbers = styled.p``;
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
-export const InterviewCard = ({ title, questionNumber, onClick }) => {
+export const InterviewCard = ({ title, questionNumber, onClick, onDelete }) => {
   return (
     <CardContainer>
       <CardTitle>{title}</CardTitle>
       <QuestionNumbers>{`${questionNumber} Questions`}</QuestionNumbers>
-      <BasicButton onClick={onClick}>See more</BasicButton>
+      <ButtonContainer>
+        <BasicButton onClick={onClick}>See more</BasicButton>
+        <BasicButton onClick={onDelete}>Delete</BasicButton>
+      </ButtonContainer>
     </CardContainer>
   );
 };

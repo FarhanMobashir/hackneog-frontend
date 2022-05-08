@@ -4,6 +4,8 @@ import { neutral, primaryColor } from "../utils";
 import { BasicButton } from "./Buttons";
 import { CustomLink } from "./CustomLink";
 import { CustomedNavLink } from "./CustomNavlink";
+import { FiLogOut, FiUser } from "react-icons/fi";
+import { useAuth } from "../contexts/AuthContext";
 
 const HeaderContainer = styled.div`
   background-color: ${neutral[100]};
@@ -30,21 +32,25 @@ const ListItem = styled.li`
 `;
 
 export const AppHeader = () => {
+  const { isAuthenticated, logout } = useAuth();
   return (
     <HeaderContainer>
       <LogoContainer>
         <CustomLink to="/">
-          <Logo>I.</Logo>
+          <Logo>quick-i.</Logo>
         </CustomLink>
       </LogoContainer>
       <NavlinkContainer>
-        {["home", "about"].map((item) => {
-          return (
-            <ListItem key={item}>
-              <CustomedNavLink to="/auth">{item}</CustomedNavLink>
-            </ListItem>
-          );
-        })}
+        <ListItem>
+          <CustomedNavLink to={`/create`}>Create</CustomedNavLink>
+        </ListItem>
+        <ListItem>
+          <CustomedNavLink to={`/interviews`}>All Interview</CustomedNavLink>
+        </ListItem>
+
+        <CustomLink to="/auth">
+          <FiUser />
+        </CustomLink>
       </NavlinkContainer>
     </HeaderContainer>
   );
