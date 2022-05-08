@@ -64,7 +64,7 @@ const VideoElement = styled.video`
   border: 1px solid black;
   padding: 1rem;
   background-color: black;
-  width: 100%;
+  width: 200px;
   height: 200px;
 `;
 
@@ -78,52 +78,58 @@ export const InterviewPage = () => {
 
   // helpers
   const call = (remotePeerId) => {
-    let userMedia = navigator.mediaDevices.getUserMedia;
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((mediaStream) => {
+        currentUserVideoRef.current.srcObject = mediaStream;
+        currentUserVideoRef.current.muted = true;
 
-    userMedia({ video: true, audio: true }, (mediaStream) => {
-      currentUserVideoRef.current.srcObject = mediaStream;
-      currentUserVideoRef.current.muted = true;
-      currentUserVideoRef.current.play();
+        var call = peerInstance.current.call(remotePeerId, mediaStream);
 
-      const call = peerInstance.current.call(remotePeerId, mediaStream);
+        call.on("stream", (remoteStream) => {
+          remoteVideoRef.current.srcObject = remoteStream;
+          remoteVideoRef.current.load();
+        });
+      })
+      .catch((err) => console.log(err));
+  };
 
-      call.on("stream", (remoteStream) => {
-        remoteVideoRef.current.srcObject = remoteStream;
-        remoteVideoRef.current.play();
-      });
+  const recieveCall = async () => {
+    let peer = new Peer();
+    peer.on("open", (id) => {
+      console.log(id);
+      setPeerId(id);
     });
+    peer.on("call", (recieveCall) => {
+      let userMedia = navigator.mediaDevices.getUserMedia;
+
+      userMedia({ video: true, audio: true })
+        .then((mediaStream) => {
+          currentUserVideoRef.current.srcObject = mediaStream;
+          currentUserVideoRef.current.muted = true;
+
+          currentUserVideoRef.current.load();
+          recieveCall.answer(mediaStream);
+          recieveCall.on("stream", function (remoteStream) {
+            remoteVideoRef.current.srcObject = remoteStream;
+            remoteVideoRef.current.load();
+          });
+        })
+        .catch((err) => console.log(err));
+    });
+    peerInstance.current = peer;
   };
 
   useEffect(() => {
-    let peer = new Peer();
-    peer.on("open", (id) => {
-      setPeerId(id);
-    });
-
-    peer.on("call", (call) => {
-      let userMedia = navigator.mediaDevices.getUserMedia;
-
-      userMedia({ video: true, audio: true }, (mediaStream) => {
-        currentUserVideoRef.current.srcObject = mediaStream;
-        currentUserVideoRef.current.play();
-        call.answer(mediaStream);
-        call.on("stream", function (remoteStream) {
-          remoteVideoRef.current.srcObject = remoteStream;
-          remoteVideoRef.current.play();
-        });
-      });
-    });
-
-    peerInstance.current = peer;
-
-    // -----------------
-    const newSocket = io("http://localhost:8080", {
-      path: "/interviews",
-    });
-    setSocket(newSocket);
-    peer.on("open", (id) => console.log(id));
-    return () => newSocket.close();
-  }, [setSocket]);
+    recieveCall();
+    // // -----------------
+    // const newSocket = io("http://localhost:8080", {
+    //   path: "/interviews",
+    // });
+    // setSocket(newSocket);
+    // peer.on("open", (id) => console.log(id));
+    // return () => newSocket.close();
+  }, []);
 
   if (socket) {
     socket.on("connect", () => console.log("hello"));
