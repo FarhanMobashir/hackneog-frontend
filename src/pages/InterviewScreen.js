@@ -105,6 +105,8 @@ export const InterviewPage = () => {
     peer.on("call", (call) => {
       var userMedia = navigator.mediaDevices.getUserMedia;
 
+      
+
       userMedia({ video: true, audio: true }, (mediaStream) => {
         currentUserVideoRef.current.srcObject = mediaStream;
         currentUserVideoRef.current.play();
