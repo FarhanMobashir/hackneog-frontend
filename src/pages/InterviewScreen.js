@@ -78,17 +78,11 @@ export const InterviewPage = () => {
 
   // helpers
   const call = (remotePeerId) => {
-    var getUserMedia =
-      navigator.getUserMedia ||
-      navigator.webkitGetUserMedia ||
-      navigator.mozGetUserMedia;
+    let userMedia = navigator.mediaDevices.getUserMedia;
 
-    getUserMedia({ video: true, audio: true }, (mediaStream) => {
+    userMedia({ video: true, audio: true }, (mediaStream) => {
       currentUserVideoRef.current.srcObject = mediaStream;
-<<<<<<< HEAD
       currentUserVideoRef.current.muted = true;
-=======
->>>>>>> 267aa6467a5d22de7b7b6010bc973ce5a935d1ac
       currentUserVideoRef.current.play();
 
       const call = peerInstance.current.call(remotePeerId, mediaStream);
@@ -107,13 +101,8 @@ export const InterviewPage = () => {
     });
 
     peer.on("call", (call) => {
-      var userMedia = navigator.mediaDevices.getUserMedia;
+      let userMedia = navigator.mediaDevices.getUserMedia;
 
-<<<<<<< HEAD
-=======
-      
-
->>>>>>> 267aa6467a5d22de7b7b6010bc973ce5a935d1ac
       userMedia({ video: true, audio: true }, (mediaStream) => {
         currentUserVideoRef.current.srcObject = mediaStream;
         currentUserVideoRef.current.play();
