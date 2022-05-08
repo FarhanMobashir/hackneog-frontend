@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { neutral, primaryColor } from "../utils";
 import { BasicButton } from "./Buttons";
+import { CustomLink } from "./CustomLink";
 import { CustomedNavLink } from "./CustomNavlink";
 
 const HeaderContainer = styled.div`
@@ -32,13 +33,15 @@ export const AppHeader = () => {
   return (
     <HeaderContainer>
       <LogoContainer>
-        <Logo>I.</Logo>
+        <CustomLink to="/">
+          <Logo>I.</Logo>
+        </CustomLink>
       </LogoContainer>
       <NavlinkContainer>
         {["home", "about"].map((item) => {
           return (
             <ListItem key={item}>
-              <CustomedNavLink to="/">{item}</CustomedNavLink>
+              <CustomedNavLink to="/auth">{item}</CustomedNavLink>
             </ListItem>
           );
         })}

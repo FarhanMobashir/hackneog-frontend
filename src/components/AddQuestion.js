@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { neutral, primaryColor } from "../utils";
+import { TextField } from "./TextField";
 
 const MainContainer = styled.div`
   display: flex;
@@ -29,24 +30,20 @@ export const AddQuestion = ({
 }) => {
   return (
     <MainContainer>
-      <Label>
-        Enter question
-        <Input
-          onChange={onQuestionChange}
-          value={questionValue}
-          type="text"
-          placeholder="Enter question here"
-        />
-      </Label>
-      <Label>
-        Enter Answer
-        <Input
-          onChange={onAnswerChange}
-          value={answerValue}
-          type="text"
-          placeholder="Enter question here"
-        />
-      </Label>
+      <TextField
+        label="Enter question here"
+        value={questionValue}
+        onChange={onQuestionChange}
+        type="text"
+        placeholder="Enter question here"
+      />
+      <TextField
+        label="Enter question here"
+        value={answerValue}
+        onChange={onAnswerChange}
+        type="text"
+        placeholder="Enter question here"
+      />
     </MainContainer>
   );
 };

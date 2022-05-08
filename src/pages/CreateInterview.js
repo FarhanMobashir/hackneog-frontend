@@ -3,6 +3,7 @@ import { BasicButton } from "../components/Buttons";
 import { useState } from "react";
 import { neutral, primaryColor } from "../utils";
 import { AddQuestion } from "../components/AddQuestion";
+import { QuestionCard } from "../components/QuestionCard";
 const MainContainer = styled.div`
   padding: 20px;
 `;
@@ -11,20 +12,6 @@ const SubHeadinng = styled.h3``;
 const CreateInterviewContainer = styled.div`
   margin: 20px 0px;
   padding: 20px;
-`;
-
-const QuestionsContainer = styled.div`
-  padding: 10px;
-  border-radius: 5px;
-  margin: 10px 0px;
-  box-shadow: 0px 0px 4px ${primaryColor[200]};
-`;
-const Question = styled.h4`
-  margin-top: 5px;
-`;
-const Answer = styled.p`
-  color: ${neutral[500]};
-  margin: 5px 0px;
 `;
 
 const ButtonContainer = styled.div`
@@ -75,10 +62,11 @@ export const CreateInterview = () => {
       <CreateInterviewContainer>
         {questionsData.map((item) => {
           return (
-            <QuestionsContainer key={item.id}>
-              <Question>{item.question}</Question>
-              <Answer>{item.answer}</Answer>
-            </QuestionsContainer>
+            <QuestionCard
+              key={item.id}
+              question={item.question}
+              answer={item.answer}
+            />
           );
         })}
         {showAddQuestionForm && (
