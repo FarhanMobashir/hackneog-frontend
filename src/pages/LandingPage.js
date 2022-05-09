@@ -10,7 +10,7 @@ export const LandingPage = () => {
     <div>
       <HeroSection
         title="Taking interview has never been this easy"
-        subtitle="Try .... to take tech interview very easily and you know it's free forever"
+        subtitle="Try quick-i to take tech interview very easily and you know it's free forever"
         imageUrl={heroImage}
         buttonText="Create Now +"
         buttonOnClick={() => navigate("/create")}

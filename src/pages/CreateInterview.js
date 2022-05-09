@@ -25,13 +25,8 @@ const ButtonContainer = styled.div`
 const questionDataInitial = [
   {
     id: nanoid(),
-    question: "What is your name?",
-    answer: "My name is what i will say during the interview",
-  },
-  {
-    id: nanoid(),
-    question: "Where are you from?",
-    answer: "I currently live in my house",
+    question: "Dummy Question ?",
+    answer: "Dummy Answer",
   },
 ];
 
@@ -51,6 +46,8 @@ export const CreateInterview = () => {
   const [createInterview, { loading: creatingInterview, data: interViewData }] =
     usecreateInterview();
 
+  const [disabled, setIsDisabled] = useState(false);
+
   const addQuestionHandler = () => {
     setShowAddQuestionForm(true);
     if (question !== "") {
@@ -67,9 +64,13 @@ export const CreateInterview = () => {
   };
   useEffect(() => {
     if (!creatingInterview && interViewData) {
+      setIsDisabled(false);
       navigate(`/interviews/${interViewData.data._id}`);
     }
-  }, [interViewData]);
+    if (creatingInterview) {
+      setIsDisabled(true);
+    }
+  }, [interViewData, creatingInterview]);
 
   const createInterviewHandler = () => {
     if (interviewName !== "") {
@@ -121,7 +122,9 @@ export const CreateInterview = () => {
           )}
         </ButtonContainer>
       </CreateInterviewContainer>
-      <BasicButton onClick={() => createInterviewHandler()}>Create</BasicButton>
+      <BasicButton disabled={disabled} onClick={() => createInterviewHandler()}>
+        Create
+      </BasicButton>
     </MainContainer>
   );
 };

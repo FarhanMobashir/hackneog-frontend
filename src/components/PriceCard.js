@@ -11,6 +11,7 @@ const PriceCardContainer = styled.div`
   justify-content: center;
   align-items: center;
   padding: 1rem;
+  width: 300px;
 `;
 const PriceCardTitle = styled.h2`
   color: ${neutral[500]};

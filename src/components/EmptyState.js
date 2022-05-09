@@ -10,8 +10,12 @@ const MainContainer = styled.div`
   align-items: center;
   flex-direction: column;
 `;
-const Heading = styled.h1``;
-const Subheading = styled.h3``;
+const Heading = styled.h1`
+  text-align: center;
+`;
+const Subheading = styled.h3`
+  text-align: center;
+`;
 const Image = styled.img`
   width: 300px;
 `;
