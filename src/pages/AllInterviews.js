@@ -4,19 +4,6 @@ import { InterviewCard } from "../components/InterviewCard";
 import { useApi } from "../contexts/ApiContext";
 import { useData } from "../contexts/DataContext";
 
-const interViewData = [
-  {
-    id: 1,
-    name: "Frontend Developer",
-    questions: 5,
-  },
-  {
-    id: 2,
-    name: "Frontend Developer",
-    questions: 5,
-  },
-];
-
 const MainContainer = styled.div`
   display: flex;
   flex-direction: column;

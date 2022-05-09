@@ -1,10 +1,8 @@
-import { NavLink } from "react-router-dom";
 import styled from "styled-components";
-import { neutral, primaryColor } from "../utils";
-import { BasicButton } from "./Buttons";
+import { neutral } from "../utils";
 import { CustomLink } from "./CustomLink";
 import { CustomedNavLink } from "./CustomNavlink";
-import { FiLogOut, FiUser } from "react-icons/fi";
+import { FiUser } from "react-icons/fi";
 import { useAuth } from "../contexts/AuthContext";
 
 const HeaderContainer = styled.div`

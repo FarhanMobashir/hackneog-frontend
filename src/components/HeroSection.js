@@ -28,7 +28,9 @@ const HeroSubtitle = styled.h3`
     text-align: center;
   }
 `;
-const HeroImage = styled.img``;
+const HeroImage = styled.img`
+  width: 300px;
+`;
 
 export const HeroSection = ({
   title,

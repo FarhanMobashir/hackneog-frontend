@@ -12,15 +12,6 @@ const Label = styled.label`
   gap: 5px;
   margin: 5px 0px;
 `;
-const Input = styled.input`
-  border: 2px solid ${neutral[300]};
-  padding: 10px 8px;
-  border-radius: 5px;
-  &:focus {
-    outline: 1px solid ${primaryColor[400]};
-    border: 1px solid ${primaryColor[400]};
-  }
-`;
 
 export const AddQuestion = ({
   onQuestionChange,

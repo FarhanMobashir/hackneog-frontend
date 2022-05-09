@@ -17,12 +17,15 @@ const Input = styled.input`
   }
 `;
 
+const ErrorText = styled.small``;
+
 export const TextField = ({
   onChange,
   value,
   label,
   type,
   placeholder,
+  errorText = "",
   required = false,
 }) => {
   return (
@@ -35,6 +38,7 @@ export const TextField = ({
         placeholder={placeholder}
         required={required}
       />
+      <ErrorText>{errorText}</ErrorText>
     </Label>
   );
 };

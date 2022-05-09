@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { neutral, primaryColor } from "../utils";
+import { neutral } from "../utils";
 import { BasicButton } from "./Buttons";
 
 const PriceCardContainer = styled.div`
@@ -27,7 +27,13 @@ const FeatureContainer = styled.ul`
 `;
 const FeatureItem = styled.li``;
 
-export const PriceCard = ({ title, subtitle, features }) => {
+export const PriceCard = ({
+  title,
+  subtitle,
+  features,
+  buttonText,
+  buttonOnClick,
+}) => {
   return (
     <PriceCardContainer>
       <PriceCardTitle>{title}</PriceCardTitle>
@@ -37,7 +43,7 @@ export const PriceCard = ({ title, subtitle, features }) => {
           return <FeatureItem key={item}>{item}</FeatureItem>;
         })}
       </FeatureContainer>
-      <BasicButton>Get Started</BasicButton>
+      <BasicButton onClick={buttonOnClick}>{buttonText}</BasicButton>
     </PriceCardContainer>
   );
 };

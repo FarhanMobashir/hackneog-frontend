@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import { BasicButton } from "../components/Buttons";
 import { useEffect, useState } from "react";
-import { neutral, primaryColor } from "../utils";
 import { AddQuestion } from "../components/AddQuestion";
 import { QuestionCard } from "../components/QuestionCard";
 import { TextField } from "../components/TextField";

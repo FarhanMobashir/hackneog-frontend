@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { PriceCard } from "./PriceCard";
 
@@ -17,6 +18,7 @@ const PriceCardContainer = styled.div`
 `;
 
 export const PricingSection = ({ sectionTitle, pricingPlan }) => {
+  const navigate = useNavigate();
   return (
     <PriceSectionContainer>
       <PriceSectionTitle>{sectionTitle}</PriceSectionTitle>
@@ -28,6 +30,14 @@ export const PricingSection = ({ sectionTitle, pricingPlan }) => {
               title={item.title}
               subtitle={item.subtitle}
               features={item.features}
+              buttonText={
+                item.title === "Basic" ? "Get Started" : "Coming Sooon"
+              }
+              buttonOnClick={() => {
+                if (item.title === "Basic") {
+                  navigate("/auth");
+                }
+              }}
             />
           );
         })}

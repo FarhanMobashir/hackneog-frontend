@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { neutral } from "../utils";
 
 export const BasicButton = styled.button`
   border: none;

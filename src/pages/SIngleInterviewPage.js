@@ -5,23 +5,6 @@ import { QuestionCard } from "../components/QuestionCard";
 import { useApi } from "../contexts/ApiContext";
 import { useData } from "../contexts/DataContext";
 
-const singleInterViewData = {
-  id: 1,
-  name: "Frontend Developer",
-  questions: [
-    {
-      id: 11,
-      question: "What is your name?",
-      answer: "My name is what i will say during the interview",
-    },
-    {
-      id: 22,
-      question: "Where are you from?",
-      answer: "I currently live in my house",
-    },
-  ],
-};
-
 const MainContainer = styled.div`
   padding: 1rem;
   display: flex;
