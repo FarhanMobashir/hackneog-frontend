@@ -335,9 +335,9 @@ export const InterviewPage = () => {
           {playingVideo && <FiVideo size={24} />}
           {!playingVideo && <FiVideoOff size={24} />}
         </IconContainer>
-        <IconContainer bgColor={red[300]}>
+        {/* <IconContainer bgColor={red[300]}>
           <FiPhoneMissed size={24} color={neutral[100]} />
-        </IconContainer>
+        </IconContainer> */}
       </ActionBar>
     </MainContainer>
   );
