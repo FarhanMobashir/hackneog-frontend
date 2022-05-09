@@ -135,7 +135,7 @@ export const InterviewPage = () => {
   };
 
   const recieveCall = async () => {
-    let peer = new Peer();
+    let peer = new Peer(isAuthenticated() ? interviewId : interviewId + "2");
     peer.on("open", (id) => {
       console.log(id);
       setPeerId(id);
@@ -207,20 +207,13 @@ export const InterviewPage = () => {
 
   useEffect(() => {
     recieveCall();
-    // // -----------------
-    // const newSocket = io("http://localhost:8080", {
-    //   path: "/interviews",
-    // });
-    // setSocket(newSocket);
-    // peer.on("open", (id) => console.log(id));
-    // return () => newSocket.close();
   }, []);
 
   // collborative editing
   useEffect(() => {
     const ydoc = new Y.Doc();
     const provider = new WebrtcProvider(interviewId, ydoc, {
-      maxConns: Math.floor(Math.random() * 1),
+      maxConns: Math.floor(Math.random() * 2),
     });
 
     const yText = ydoc.getText("codemirror");
