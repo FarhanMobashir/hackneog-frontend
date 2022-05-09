@@ -213,7 +213,7 @@ export const InterviewPage = () => {
   useEffect(() => {
     const ydoc = new Y.Doc();
     const provider = new WebrtcProvider(interviewId, ydoc, {
-      maxConns: Math.floor(Math.random() * 2),
+      maxConns: 5 + Math.floor(Math.random() * 2),
     });
 
     const yText = ydoc.getText("codemirror");
