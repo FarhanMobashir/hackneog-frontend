@@ -16,8 +16,7 @@ import "codemirror/mode/javascript/javascript.js";
 import "../codemirror.style.css";
 // peerjs
 import Peer from "peerjs";
-// socket
-import { io } from "socket.io-client";
+
 import { TextField } from "../components/TextField";
 import { BasicButton } from "../components/Buttons";
 import { useAuth } from "../contexts/AuthContext";
@@ -25,6 +24,7 @@ import { useApi } from "../contexts/ApiContext";
 import { useParams } from "react-router-dom";
 import { useData } from "../contexts/DataContext";
 import { QuestionCard } from "../components/QuestionCard";
+import { BasicDialogue } from "../components/BasicDialogue";
 
 const MainContainer = styled.div`
   display: flex;
@@ -38,6 +38,7 @@ const TopContainer = styled.div`
 const EditorArea = styled.div`
   width: 75vw;
   height: 100%;
+  border-radius: 10px;
 `;
 const SideBar = styled.div`
   flex-basis: 25%;
@@ -48,6 +49,13 @@ const SideBar = styled.div`
   align-items: center;
   margin-left: auto;
   padding: 10px 0px;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
 `;
 
 const ActionBar = styled.div`
@@ -67,9 +75,6 @@ const IconContainer = styled.button`
   border-radius: 50px;
   background-color: ${(props) => props.bgColor};
   cursor: pointer;
-  /* &:hover {
-    background-color: ${neutral[300]};
-  } */
 `;
 
 const VideoElement = styled.video`
@@ -88,7 +93,6 @@ const QuestionContainer = styled.div`
 `;
 
 export const InterviewPage = () => {
-  const [socket, setSocket] = useState(null);
   const remoteVideoRef = useRef();
   const currentUserVideoRef = useRef();
   const peerInstance = useRef(null);
@@ -98,6 +102,9 @@ export const InterviewPage = () => {
   const [playingAudio, setPlayingAudio] = useState(true);
   const [showQuestions, setShowQuestions] = useState(false);
 
+  // copy modal
+  const [showModal, setShowModal] = useState(true);
+
   const { interviewId } = useParams();
   const { isAuthenticated } = useAuth();
   const { usegetSingleInterview } = useApi();
@@ -106,6 +113,10 @@ export const InterviewPage = () => {
   const singleInterview = globalState.singleInterview;
 
   // helpers
+  const inviteText = `Link : ${window.location}
+          --------------------------
+          Call-Id : ${peerId}
+          `;
   const call = (remotePeerId) => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
@@ -208,7 +219,9 @@ export const InterviewPage = () => {
   // collborative editing
   useEffect(() => {
     const ydoc = new Y.Doc();
-    const provider = new WebrtcProvider("yjs-demo", ydoc, { maxConns: 2 });
+    const provider = new WebrtcProvider(interviewId, ydoc, {
+      maxConns: Math.floor(Math.random() * 1),
+    });
 
     const yText = ydoc.getText("codemirror");
     const editorContainer = document.querySelector("#editor");
@@ -254,14 +267,19 @@ export const InterviewPage = () => {
 
   return (
     <MainContainer>
+      {showModal && (
+        <BasicDialogue
+          title="Invite Now"
+          buttonText="Copy"
+          onCopy={() => navigator.clipboard.writeText(inviteText)}
+          onClose={() => setShowModal(false)}
+          inviteText={inviteText}
+        />
+      )}
       <TopContainer>
         <EditorArea id="editor"></EditorArea>
         <SideBar>
-          <VideoElement
-            ref={currentUserVideoRef}
-            // className="video"
-            autoPlay={true}
-          />
+          <VideoElement ref={currentUserVideoRef} autoPlay={true} />
           <VideoElement ref={remoteVideoRef} autoPlay={true} />
           {!showQuestions && (
             <>
@@ -272,7 +290,14 @@ export const InterviewPage = () => {
                 placeholder="Enter peerId here"
                 onChange={(e) => setRemotePeerId(e.target.value)}
               />
-              <BasicButton onClick={() => call(remotePeerId)}>Call</BasicButton>
+              <ButtonContainer>
+                <BasicButton onClick={() => call(remotePeerId)}>
+                  Call
+                </BasicButton>
+                <BasicButton onClick={() => setShowModal(true)}>
+                  Invite
+                </BasicButton>
+              </ButtonContainer>
             </>
           )}
           {isAuthenticated() && !showQuestions && (
