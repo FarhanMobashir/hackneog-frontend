@@ -69,7 +69,7 @@ export const AuthPage = () => {
     let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
     if (emailRegex.test(email) && password.length >= 8) {
       setIsDisabled(true);
-      fetch("https://hackneog-backend.herokuapp.com/signin", {
+      fetch("https://hackneog-backend.herokuapp.com/signup", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
