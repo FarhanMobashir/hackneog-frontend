@@ -1,16 +1,16 @@
 import styled from "styled-components";
 import { neutral } from "../utils";
-import { BasicButton } from "./Buttons";
+import { PrimaryButton } from "./Buttons";
 
 const PriceCardContainer = styled.div`
-  border: 5px solid ${neutral[400]};
+  box-shadow: 0px 0px 10px 0px ${neutral[300]};
   border-radius: 5px;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   justify-content: center;
   align-items: center;
-  padding: 1rem;
+  padding: 1.5rem 1rem;
   width: 300px;
 `;
 const PriceCardTitle = styled.h2`
@@ -44,7 +44,7 @@ export const PriceCard = ({
           return <FeatureItem key={item}>{item}</FeatureItem>;
         })}
       </FeatureContainer>
-      <BasicButton onClick={buttonOnClick}>{buttonText}</BasicButton>
+      <PrimaryButton onClick={buttonOnClick}>{buttonText}</PrimaryButton>
     </PriceCardContainer>
   );
 };

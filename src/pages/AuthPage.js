@@ -34,11 +34,15 @@ export const AuthPage = () => {
 
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  // base url
+  const baseUrl = "http://localhost:8080";
+  // const baseUrl = "https://hackneog-backend.herokuapp.com/signup";
   const signinHandler = (e) => {
     e.preventDefault();
     let data = { email, password };
     setIsDisabled(true);
-    fetch("https://hackneog-backend.herokuapp.com/signin", {
+    fetch(baseUrl + "/signin", {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
@@ -67,9 +71,9 @@ export const AuthPage = () => {
     e.preventDefault();
     let data = { email: email.toLocaleLowerCase(), password };
     let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    if (emailRegex.test(email) && password.length >= 8) {
+    if (emailRegex.test(email) && password.length >= 4) {
       setIsDisabled(true);
-      fetch("https://hackneog-backend.herokuapp.com/signup", {
+      fetch(baseUrl + "/signup", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
@@ -95,7 +99,7 @@ export const AuthPage = () => {
     if (!emailRegex.test(email)) {
       setSignupEmailError(true);
     }
-    if (password.length < 8) {
+    if (password.length <= 4) {
       setSignupPasswordError(true);
     }
     if (emailRegex.test(email)) {

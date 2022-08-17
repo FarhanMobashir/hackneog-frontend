@@ -1,5 +1,9 @@
 import styled from "styled-components";
-import { BasicButton } from "../components/Buttons";
+import {
+  BasicButton,
+  OutlineButton,
+  PrimaryButton,
+} from "../components/Buttons";
 import { useEffect, useState } from "react";
 import { AddQuestion } from "../components/AddQuestion";
 import { QuestionCard } from "../components/QuestionCard";
@@ -112,7 +116,9 @@ export const CreateInterview = () => {
           />
         )}
         <ButtonContainer>
-          <BasicButton onClick={addQuestionHandler}>Add Question +</BasicButton>
+          <OutlineButton onClick={addQuestionHandler}>
+            Add Question +
+          </OutlineButton>
           {showAddQuestionForm && (
             <BasicButton
               onClick={() => setShowAddQuestionForm(!showAddQuestionForm)}
@@ -122,9 +128,12 @@ export const CreateInterview = () => {
           )}
         </ButtonContainer>
       </CreateInterviewContainer>
-      <BasicButton disabled={disabled} onClick={() => createInterviewHandler()}>
+      <PrimaryButton
+        disabled={disabled}
+        onClick={() => createInterviewHandler()}
+      >
         Create
-      </BasicButton>
+      </PrimaryButton>
     </MainContainer>
   );
 };

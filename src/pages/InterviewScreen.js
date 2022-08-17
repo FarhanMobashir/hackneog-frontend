@@ -95,7 +95,7 @@ const QuestionContainer = styled.div`
 export const InterviewPage = () => {
   const remoteVideoRef = useRef();
   const currentUserVideoRef = useRef();
-  const peerInstance = useRef(null);
+
   const [peerId, setPeerId] = useState("");
   const [remotePeerId, setRemotePeerId] = useState("");
   const [playingVideo, setPlayingVideo] = useState(true);
@@ -112,11 +112,19 @@ export const InterviewPage = () => {
   const { state: globalState } = useData();
   const singleInterview = globalState.singleInterview;
 
+  // peer
+  const peerInstance = useRef(
+    new Peer(isAuthenticated() ? interviewId : interviewId + "2")
+  );
+
   // helpers
   const inviteText = `Link : ${window.location}
           --------------------------
           Call-Id : ${peerId}
           `;
+
+  // call
+
   const call = (remotePeerId) => {
     navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
@@ -124,9 +132,9 @@ export const InterviewPage = () => {
         currentUserVideoRef.current.srcObject = mediaStream;
         currentUserVideoRef.current.muted = true;
 
-        var call = peerInstance.current.call(remotePeerId, mediaStream);
+        let peerCall = peerInstance.current.call(remotePeerId, mediaStream);
 
-        call.on("stream", (remoteStream) => {
+        peerCall.on("stream", (remoteStream) => {
           remoteVideoRef.current.srcObject = remoteStream;
           remoteVideoRef.current.load();
         });
@@ -135,12 +143,11 @@ export const InterviewPage = () => {
   };
 
   const recieveCall = async () => {
-    let peer = new Peer(isAuthenticated() ? interviewId : interviewId + "2");
-    peer.on("open", (id) => {
-      console.log(id);
+    peerInstance.current.on("open", (id) => {
+      console.log("peer id recieve", id);
       setPeerId(id);
     });
-    peer.on("call", (recieveCall) => {
+    peerInstance.current.on("call", (recieve) => {
       let userMedia = navigator.mediaDevices.getUserMedia;
 
       userMedia({ video: true, audio: true })
@@ -149,15 +156,14 @@ export const InterviewPage = () => {
           currentUserVideoRef.current.muted = true;
 
           currentUserVideoRef.current.load();
-          recieveCall.answer(mediaStream);
-          recieveCall.on("stream", function (remoteStream) {
+          recieve.answer(mediaStream);
+          recieve.on("stream", function (remoteStream) {
             remoteVideoRef.current.srcObject = remoteStream;
             remoteVideoRef.current.load();
           });
         })
         .catch((err) => console.log(err));
     });
-    peerInstance.current = peer;
   };
 
   useEffect(() => {
@@ -207,7 +213,7 @@ export const InterviewPage = () => {
 
   useEffect(() => {
     recieveCall();
-  }, []);
+  }, [peerInstance.current, interviewId]);
 
   // collborative editing
   useEffect(() => {
@@ -227,36 +233,6 @@ export const InterviewPage = () => {
 
     const binding = new CodemirrorBinding(yText, editor, provider.awareness);
   }, []);
-
-  // function StreamVideo() {
-  //   var video = document.querySelector(".video");
-  //   video.muted = true;
-
-  //   navigator.mediaDevices
-  //     .getUserMedia({
-  //       audio: true,
-  //       video: true,
-  //     })
-  //     .then(function (mediaStream) {
-  //       let video = document.querySelector(".video");
-  //       video.srcObject = mediaStream;
-  //       if (!playingVideo) {
-  //         mediaStream.getTracks().forEach((i) => {
-  //           if (i.kind === "video") {
-  //             i.stop();
-  //           }
-  //         });
-  //       }
-
-  //       video.onLoadedMetadata = function (e) {
-  //         video.play();
-  //       };
-  //     });
-  // }
-
-  // useEffect(() => {
-  //   StreamVideo();
-  // }, [playingVideo, playingAudio]);
 
   return (
     <MainContainer>

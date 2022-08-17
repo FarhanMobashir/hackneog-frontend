@@ -59,8 +59,8 @@ export const ApiProvider = ({ children }) => {
       },
     ],
     fetchBaseQuery({
-      baseUrl: "https://hackneog-backend.herokuapp.com/api",
-      //   baseUrl: "http://localhost:8080/api",
+      // baseUrl: "https://hackneog-backend.herokuapp.com/api",
+      baseUrl: "http://localhost:8080/api",
 
       headers: headers,
     }),

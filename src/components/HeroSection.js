@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { BasicButton } from "./Buttons";
+import { neutral } from "../utils";
+import { BasicButton, PrimaryButton } from "./Buttons";
 
 const HeroContainer = styled.div`
   display: flex;
@@ -24,6 +25,7 @@ const HeroTitle = styled.h1`
   }
 `;
 const HeroSubtitle = styled.h3`
+  color: ${neutral[500]};
   @media (max-width: 700px) {
     text-align: center;
   }
@@ -44,7 +46,7 @@ export const HeroSection = ({
       <HeroContentContainer>
         <HeroTitle>{title}</HeroTitle>
         <HeroSubtitle>{subtitle}</HeroSubtitle>
-        <BasicButton onClick={buttonOnClick}>{buttonText}</BasicButton>
+        <PrimaryButton onClick={buttonOnClick}>{buttonText}</PrimaryButton>
       </HeroContentContainer>
       <HeroImage src={imageUrl} />
     </HeroContainer>
