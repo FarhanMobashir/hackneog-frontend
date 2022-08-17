@@ -36,8 +36,8 @@ export const AuthPage = () => {
   const navigate = useNavigate();
 
   // base url
-  const baseUrl = "http://localhost:8080";
-  // const baseUrl = "https://hackneog-backend.herokuapp.com/signup";
+  // const baseUrl = "http://localhost:8080";
+  const baseUrl = "https://hackneog-backend.herokuapp.com";
   const signinHandler = (e) => {
     e.preventDefault();
     let data = { email, password };
