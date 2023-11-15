@@ -37,7 +37,7 @@ export const AuthPage = () => {
 
   // base url
   // const baseUrl = "http://localhost:8080";
-  const baseUrl = "https://hackneog-backend.herokuapp.com";
+  const baseUrl = "https://hackneog-backend.onrender.com";
   const signinHandler = (e) => {
     e.preventDefault();
     let data = { email, password };
